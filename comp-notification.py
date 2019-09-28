@@ -1,4 +1,4 @@
-import requests, smtplib, ssl, time, pandas
+import requests, smtplib, ssl, time
 from bs4 import BeautifulSoup
 from string import Template
 from email.mime.multipart import MIMEMultipart
@@ -14,6 +14,12 @@ url = "https://www.worldcubeassociation.org/competitions"
 MY_ADDRESS = 'ainesh1998@outlook.com'
 PASSWORD = input("Type your password and press enter: ")
 compsFound = {}
+
+def formatNewComps(newComps):
+    result = ""
+    for comp in newComps:
+        result = result + '<li><a href="' + newComps[comp] + '">' + comp + "</a></li>"
+    return result
 
 def getNewComps():
     r = requests.get(url)
@@ -43,16 +49,16 @@ def sendMail(newComps):
     s.starttls()
     s.login(MY_ADDRESS, PASSWORD)
 
-    message_template = read_template('message.txt')
+    message_template = read_template('message.html')
 
     msg = MIMEMultipart()
-    message = message_template.substitute(COMP=pandas.DataFrame(list(newComps.keys())).to_csv(index=False))
+    message = message_template.substitute(COMP=formatNewComps(newComps))
 
-    msg['From']=MY_ADDRESS
-    msg['To']="ainesh1998@outlook.com"
-    msg['Subject']="New WCA Competition Announced"
+    msg['From'] = MY_ADDRESS
+    msg['To'] = "ainesh1998@outlook.com"
+    msg['Subject'] = "New WCA Competition Announced"
 
-    msg.attach(MIMEText(message, 'plain'))
+    msg.attach(MIMEText(message, 'html'))
 
     s.send_message(msg)
     del msg
@@ -63,10 +69,10 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
-    # getNewComps()
+    # newComps = getNewComps()
 
     while True:
-        # time.sleep(300) # wait one minute
+        # time.sleep(300)
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = getNewComps()
         if len(newComps) > 0:

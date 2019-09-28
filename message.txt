@@ -1,3 +1,0 @@
-The following WCA competitions have been announced.
-
-${COMP}
