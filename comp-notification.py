@@ -1,4 +1,4 @@
-import requests, smtplib, ssl, time
+import requests, smtplib, ssl, time, pandas
 from bs4 import BeautifulSoup
 from string import Template
 from email.mime.multipart import MIMEMultipart
@@ -12,7 +12,7 @@ def read_template(filename):
 wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
 MY_ADDRESS = 'ainesh1998@outlook.com'
-# PASSWORD = input("Type your password and press enter: ")
+PASSWORD = input("Type your password and press enter: ")
 compsFound = {}
 
 def getNewComps():
@@ -32,10 +32,13 @@ def getNewComps():
                 if name not in compsFound:
                     newComps[name] = link
                     compsFound[name] = link
-    print("New comps retrieved")
+
+    print("1 new comp retrieved") if len(newComps) == 1 else print(str(len(newComps)) + " new comps retrieved")
     return newComps
 
 def sendMail(newComps):
+    print("Sending email notification")
+
     s = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
     s.starttls()
     s.login(MY_ADDRESS, PASSWORD)
@@ -43,7 +46,7 @@ def sendMail(newComps):
     message_template = read_template('message.txt')
 
     msg = MIMEMultipart()
-    message = message_template.substitute(COMP=list(newComps)[0])
+    message = message_template.substitute(COMP=pandas.DataFrame(list(newComps.keys())).to_csv(index=False))
 
     msg['From']=MY_ADDRESS
     msg['To']="ainesh1998@outlook.com"
@@ -54,17 +57,20 @@ def sendMail(newComps):
     s.send_message(msg)
     del msg
 
+    print("Email sent")
     s.quit()
+
 
 def main():
     print("Getting all relevant comps")
-    getNewComps()
+    # getNewComps()
 
     while True:
-        time.sleep(300) # wait one minute
+        # time.sleep(300) # wait one minute
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = getNewComps()
-        sendMail(newComps)
+        if len(newComps) > 0:
+            sendMail(newComps)
 
 if __name__ == "__main__":
     main()

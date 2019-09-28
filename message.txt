@@ -1,1 +1,3 @@
-A new competition, ${COMP}, has been announced.
+The following WCA competitions have been announced.
+
+${COMP}
