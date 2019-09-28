@@ -13,12 +13,20 @@ wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
 MY_ADDRESS = 'ainesh1998@outlook.com'
 PASSWORD = input("Type your password and press enter: ")
-compsFound = {}
+compsFound = []
 
 def formatNewComps(newComps):
     result = ""
+    compDetails = """<li>
+                        <a href= "{}">{}</a>
+                        <ul>
+                            <li>Date: {}</li>
+                            <li>Location: {}</li>
+                        </ul>
+                     </li><br>"""
+
     for comp in newComps:
-        result = result + '<li><a href="' + newComps[comp] + '">' + comp + "</a></li>"
+        result = result + compDetails.format(newComps[comp][0], comp, newComps[comp][1], newComps[comp][2])
     return result
 
 def getNewComps():
@@ -27,6 +35,7 @@ def getNewComps():
     locations = soup.findAll("div", {"class": "location"})
     countries = [location.strong.text.strip() for location in locations]
     allComps = soup.findAll("div", {"class": "competition-link"})
+    dates = soup.findAll("span", {"class": "date"})
 
     newComps = {}
     for i in range(len(locations)):
@@ -36,8 +45,8 @@ def getNewComps():
                 name = linkTag.text.strip()
                 link = "https://worldcubeassociation.org/" + linkTag.get('href')
                 if name not in compsFound:
-                    newComps[name] = link
-                    compsFound[name] = link
+                    newComps[name] = [link, dates[i].text.strip(), locations[i].text.strip()]
+                    compsFound.append(name)
 
     print("1 new comp retrieved") if len(newComps) == 1 else print(str(len(newComps)) + " new comps retrieved")
     return newComps
@@ -69,10 +78,10 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
-    # newComps = getNewComps()
+    newComps = getNewComps()
 
     while True:
-        # time.sleep(300)
+        time.sleep(300)
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = getNewComps()
         if len(newComps) > 0:
