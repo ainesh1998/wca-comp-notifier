@@ -48,6 +48,9 @@ def getNewComps():
                     newComps[name] = [link, dates[i].text.strip(), locations[i].text.strip()]
                     compsFound.append(name)
 
+    # Remove old comps
+    compsFound = [comp for comp in compsFound if comp in allComps]
+
     print("1 new comp retrieved") if len(newComps) == 1 else print(str(len(newComps)) + " new comps retrieved")
     return newComps
 
