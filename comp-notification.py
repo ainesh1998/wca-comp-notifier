@@ -61,7 +61,7 @@ def sendMail(newComps):
     s.starttls()
     s.login(MY_ADDRESS, PASSWORD)
 
-    message_template = read_template('message.html')
+    message_template = read_template('newComp.html')
 
     msg = MIMEMultipart()
     message = message_template.substitute(COMP=formatNewComps(newComps))
