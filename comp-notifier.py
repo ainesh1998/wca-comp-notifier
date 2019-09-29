@@ -4,16 +4,16 @@ from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def read_template(filename):
-    with open(filename, 'r', encoding='utf-8') as template_file:
-        template_file_content = template_file.read()
-    return Template(template_file_content)
-
 wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
 # MY_ADDRESS = 'ainesh1998@outlook.com'
 # PASSWORD = input("Type your password and press enter: ")
 compsFound = []
+
+def read_template(filename):
+    with open(filename, 'r', encoding='utf-8') as template_file:
+        template_file_content = template_file.read()
+    return Template(template_file_content)
 
 def formatNewComps(newComps):
     result = ""
