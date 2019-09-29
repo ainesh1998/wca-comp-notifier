@@ -11,8 +11,8 @@ def read_template(filename):
 
 wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
-MY_ADDRESS = 'ainesh1998@outlook.com'
-PASSWORD = input("Type your password and press enter: ")
+# MY_ADDRESS = 'ainesh1998@outlook.com'
+# PASSWORD = input("Type your password and press enter: ")
 compsFound = []
 
 def formatNewComps(newComps):
