@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 
 wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
-# MY_ADDRESS = 'ainesh1998@outlook.com'
+MY_ADDRESS = 'ainesh1998@outlook.com'
 # PASSWORD = input("Type your password and press enter: ")
 compsFound = []
 
@@ -29,27 +29,31 @@ def formatNewComps(newComps):
         result = result + compDetails.format(newComps[comp][0], comp, newComps[comp][1], newComps[comp][2])
     return result
 
-def getNewComps():
+def updateComps():
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     locations = soup.findAll("div", {"class": "location"})
     countries = [location.strong.text.strip() for location in locations]
-    allComps = soup.findAll("div", {"class": "competition-link"})
+    allCompDivs = soup.findAll("div", {"class": "competition-link"})
+    allComps = [compDiv.a for compDiv in allCompDivs]
     dates = soup.findAll("span", {"class": "date"})
 
     newComps = {}
+    global compsFound
+
+    # Remove old comps - those not on the WCA page anymore
+    compsFound = [comp for comp in compsFound if comp in [comp.text.strip() for comp in allComps]]
+
+    # Get new comps
     for i in range(len(locations)):
         for j in wantedLocations:
             if j in countries[i]:
-                linkTag = allComps[i].a
-                name = linkTag.text.strip()
-                link = "https://worldcubeassociation.org/" + linkTag.get('href')
+                name = allComps[i].text.strip()
+                link = "https://worldcubeassociation.org/" + allComps[i].get('href')
                 if name not in compsFound:
                     newComps[name] = [link, dates[i].text.strip(), locations[i].text.strip()]
-                    compsFound.append(name)
 
-    # Remove old comps
-    compsFound = [comp for comp in compsFound if comp in allComps]
+    compsFound = compsFound + list(newComps.keys())
 
     print("1 new comp retrieved") if len(newComps) == 1 else print(str(len(newComps)) + " new comps retrieved")
     return newComps
@@ -81,12 +85,12 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
-    newComps = getNewComps()
+    updateComps()
 
     while True:
-        time.sleep(300)
+        time.sleep(300) # Check every 5 minutes
         print("Checking for new comps at " + time.strftime('%H:%M'))
-        newComps = getNewComps()
+        newComps = updateComps()
         if len(newComps) > 0:
             sendMail(newComps)
 
