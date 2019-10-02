@@ -1,4 +1,4 @@
-import requests, smtplib, ssl, time
+import requests, smtplib, ssl, time, os
 from bs4 import BeautifulSoup
 from string import Template
 from email.mime.multipart import MIMEMultipart
@@ -6,8 +6,8 @@ from email.mime.text import MIMEText
 
 wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
-MY_ADDRESS = 'ainesh1998@outlook.com'
-# PASSWORD = input("Type your password and press enter: ")
+MY_ADDRESS = os.environ.get('ADDRESS')
+PASSWORD = os.environ.get('PASSWORD')
 compsFound = []
 
 def read_template(filename):
@@ -85,10 +85,10 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
-    updateComps()
+    # updateComps()
 
     while True:
-        time.sleep(300) # Check every 5 minutes
+        # time.sleep(300) # Check every 5 minutes
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = updateComps()
         if len(newComps) > 0:
