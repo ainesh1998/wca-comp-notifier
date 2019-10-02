@@ -87,10 +87,10 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
-    # updateComps()
+    updateComps()
 
     while True:
-        # time.sleep(300) # Check every 5 minutes
+        time.sleep(300) # Check every 5 minutes
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = updateComps()
         if len(newComps) > 0:
