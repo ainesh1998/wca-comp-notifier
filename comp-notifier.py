@@ -5,9 +5,17 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 url = "https://www.worldcubeassociation.org/competitions"
-WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS').split(',')
-MY_ADDRESS = os.environ.get('ADDRESS')
-PASSWORD = os.environ.get('PASSWORD')
+
+if not os.environ.get('ADDRESS'):
+    with open ("config.dev", "r") as file:
+        config_vars = file.read().split('\n')
+        WANTED_LOCATIONS = config_vars[0].split(',')
+        MY_ADDRESS = config_vars[1]
+        PASSWORD = config_vars[2]
+else:
+    WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS').split(',')
+    MY_ADDRESS = os.environ.get('ADDRESS')
+    PASSWORD = os.environ.get('PASSWORD')
 compsFound = []
 
 def read_template(filename):
