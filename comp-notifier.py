@@ -4,8 +4,8 @@ from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-wantedLocations = ["Malaysia", "United Kingdom"]
 url = "https://www.worldcubeassociation.org/competitions"
+WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS').split(',')
 MY_ADDRESS = os.environ.get('ADDRESS')
 PASSWORD = os.environ.get('PASSWORD')
 compsFound = []
@@ -46,7 +46,7 @@ def updateComps():
 
     # Get new comps
     for i in range(len(locations)):
-        for j in wantedLocations:
+        for j in WANTED_LOCATIONS:
             if j in countries[i]:
                 name = allComps[i].text.strip()
                 link = "https://worldcubeassociation.org/" + allComps[i].get('href')
