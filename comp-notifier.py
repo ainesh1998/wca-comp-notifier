@@ -60,6 +60,8 @@ def updateComps():
 
 def sendMail(newComps):
     print("Sending email notification")
+    print(MY_ADDRESS)
+    print(PASSWORD)
 
     s = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
     s.starttls()
