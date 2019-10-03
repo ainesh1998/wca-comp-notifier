@@ -5,18 +5,21 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 url = "https://www.worldcubeassociation.org/competitions"
-
-if not os.environ.get('ADDRESS'):
-    with open ("config.dev", "r") as file:
-        config_vars = file.read().split('\n')
-        WANTED_LOCATIONS = config_vars[0].split(',')
-        MY_ADDRESS = config_vars[1]
-        PASSWORD = config_vars[2]
-else:
-    WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS').split(',')
-    MY_ADDRESS = os.environ.get('ADDRESS')
-    PASSWORD = os.environ.get('PASSWORD')
+WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS')
+MY_ADDRESS = os.environ.get('ADDRESS')
+PASSWORD = os.environ.get('PASSWORD')
 compsFound = []
+
+def setGlobals():
+    global WANTED_LOCATIONS, MY_ADDRESS, PASSWORD
+    if not WANTED_LOCATIONS or not MY_ADDRESS or not PASSWORD:
+        with open ("comp-notifier.cfg", "r") as file:
+            config_vars = file.read().split('\n')
+            WANTED_LOCATIONS = config_vars[0].split(',')
+            MY_ADDRESS = config_vars[1]
+            PASSWORD = config_vars[2]
+    else:
+        WANTED_LOCATIONS = WANTED_LOCATIONS.split(',')
 
 def read_template(filename):
     with open(filename, 'r', encoding='utf-8') as template_file:
@@ -68,8 +71,6 @@ def updateComps():
 
 def sendMail(newComps):
     print("Sending email notification")
-    print(MY_ADDRESS)
-    print(PASSWORD)
 
     s = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
     s.starttls()
@@ -95,6 +96,7 @@ def sendMail(newComps):
 
 def main():
     print("Getting all relevant comps")
+    setGlobals()
     updateComps()
 
     while True:
