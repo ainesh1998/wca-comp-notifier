@@ -1,2 +1,4 @@
 # WCA Competition Notifier 
-A script that sends me an email when WCA competitions of certain countries are announced. It has been deployed on Heroku as a worker. Intended to be a practice for deploying apps on Heroku.
+A script that sends me an email when World Cube Association (WCA) competitions of certain countries are announced. It has been deployed on Heroku as a worker. It was intended to be a personal exercise for deploying apps on Heroku, as well as a more convenient way to receive information about potential upcoming competitions (instead of me checking the WCA website manually once in a while).
+
+I used Python's <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">BeautifulSoup</a> library to retrieve the potential competitions from the <a href="https://www.worldcubeassociation.org/competitions">competitions page on the WCA website</a>. The script checks this page every 5 minutes for new competitions. To send emails, I used the <a href="https://docs.python.org/3/library/smtplib.html">smtplib</a> library.
