@@ -10,6 +10,7 @@ MY_ADDRESS = os.environ.get('ADDRESS')
 PASSWORD = os.environ.get('PASSWORD')
 compsFound = []
 
+# Ensure the globals have the intended values
 def setGlobals():
     global WANTED_LOCATIONS, MY_ADDRESS, PASSWORD
     if not WANTED_LOCATIONS or not MY_ADDRESS or not PASSWORD:
@@ -21,11 +22,13 @@ def setGlobals():
     else:
         WANTED_LOCATIONS = WANTED_LOCATIONS.split(',')
 
+# Reads email templates
 def read_template(filename):
     with open(filename, 'r', encoding='utf-8') as template_file:
         template_file_content = template_file.read()
     return Template(template_file_content)
 
+# Puts in information regarding new competitions into the email template
 def formatNewComps(newComps):
     result = ""
     compDetails = """<li>
@@ -40,6 +43,7 @@ def formatNewComps(newComps):
         result = result + compDetails.format(newComps[comp][0], comp, newComps[comp][1], newComps[comp][2])
     return result
 
+# Removes old competitions (those not on the competitions page anymore) and gets those just announced
 def updateComps():
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -69,6 +73,7 @@ def updateComps():
     print("1 new comp retrieved") if len(newComps) == 1 else print(str(len(newComps)) + " new comps retrieved")
     return newComps
 
+# Sends an email containing the new competitions
 def sendMail(newComps):
     print("Sending email notification")
 
@@ -95,6 +100,7 @@ def sendMail(newComps):
 
 
 def main():
+    # Initialise
     print("Getting all relevant comps")
     setGlobals()
     updateComps()
