@@ -4,6 +4,7 @@ from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+interval = 30 # how often to check, in minutes
 url = "https://www.worldcubeassociation.org/competitions"
 WANTED_LOCATIONS = os.environ.get('WANTED_LOCATIONS')
 MY_ADDRESS = os.environ.get('ADDRESS')
@@ -14,7 +15,7 @@ compsFound = []
 def setGlobals():
     global WANTED_LOCATIONS, MY_ADDRESS, PASSWORD
     if not WANTED_LOCATIONS or not MY_ADDRESS or not PASSWORD:
-        with open ("comp-notifier.cfg", "r") as file:
+        with open ("app.cfg", "r") as file:
             config_vars = file.read().split('\n')
             WANTED_LOCATIONS = config_vars[0].split(',')
             MY_ADDRESS = config_vars[1]
@@ -106,7 +107,7 @@ def main():
     updateComps()
 
     while True:
-        time.sleep(300) # Check every 5 minutes
+        time.sleep(interval * 60)
         print("Checking for new comps at " + time.strftime('%H:%M'))
         newComps = updateComps()
         if len(newComps) > 0:
